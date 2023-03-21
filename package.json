@@ -1,0 +1,22 @@
+{
+  "name": "gd-save-decoder",
+  "version": "1.0.0",
+  "description": "Decodes and encodes Geometry Dash Save files",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KtheVeg/gd-save-decoder.git"
+  },
+  "author": "KtheVeg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KtheVeg/gd-save-decoder/issues"
+  },
+  "homepage": "https://github.com/KtheVeg/gd-save-decoder#readme",
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  }
+}
