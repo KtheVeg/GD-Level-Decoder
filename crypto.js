@@ -9,18 +9,22 @@ module.exports = class crypto {
         return res; 
     }
 
-    decode(data) {
-        console.log("Decoding...")
+    decode(data, verbosity) {
         if (data.startsWith('<?xml version="1.0"?>')) return data
+        if (verbosity) console.log("XOR deciphering...");
         let decoded = this.xor(data, 11)
+        if (verbosity) console.log("Decoding Base64...");
         decoded = Buffer.from(decoded, 'base64')
+        if (verbosity) console.log("Attempting to decompress...");
         try { return zlib.unzipSync(decoded).toString() }
         catch (e) { return console.log("Error! GD save file seems to be corrupt!") }
     }
-    encode(data) {
-        console.log("Encoding...")
+    encode(data, verbosity) {
+        if (verbosity) console.log("Compressing...");
         let encoded = zlib.gzipSync(data);
+        if (verbosity) console.log("Encoding Base64...");
         encoded = encoded.toString('base64')
+        if (verbosity) console.log("XOR ciphering...");
         return this.xor(encoded, 11)
     }
 }

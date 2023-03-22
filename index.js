@@ -3,12 +3,14 @@ const lvlEncode = require("./encode.js");
 const fs = require("fs");
 var args;
 var command;
+var verbose = false;
 var operationParams =
 {
     "encodedFilePath": "",
     "decodedFilePath": "",
     "encode": false
 };
+const currentPath = process.cwd();
 
 // Parse command-line arguments
 try {
@@ -43,12 +45,12 @@ try {
         case "save":
         case "s":
             operationParams.encodedFilePath = process.env["LOCALAPPDATA"] + "/GeometryDash/CCGameManager.dat";
-            operationParams.decodedFilePath = __dirname + "/CCGameManager.xml";
+            operationParams.decodedFilePath = currentPath + "/CCGameManager.xml";
             break;
         case "level":
         case "l":
             operationParams.encodedFilePath = process.env["LOCALAPPDATA"] + "/GeometryDash/CCLocalLevels.dat";
-            operationParams.decodedFilePath = __dirname + "/CCLocalLevels.xml";
+            operationParams.decodedFilePath = currentPath + "/CCLocalLevels.xml";
             break;
         default:
             throw("Invalid target specified! (e)");
@@ -73,7 +75,7 @@ try {
                     break;
                 case "-v":
                 case "--verbose":
-                    operationParams.verbose = true;
+                    verbose = true;
                     console.log("Verbose mode enabled.");
                     break;
                 default:
@@ -94,16 +96,31 @@ try {
     process.exit(1);
 }
 
+// If verbose, log all operation parameters
+if (verbose)
+{
+    console.log("Operation Parameters:");
+    console.log(`Encode: ${operationParams.encode}`);
+    console.log(`Encoded File Path: ${operationParams.encodedFilePath}`);
+    console.log(`Decoded File Path: ${operationParams.decodedFilePath}`);
+}
+
 // Perform the operation
 if (operationParams.encode)
 {
     console.log("Encoding...");
-    try {lvlEncode(operationParams.decodedFilePath, operationParams.encodedFilePath);}
+    try {lvlEncode(operationParams.decodedFilePath, operationParams.encodedFilePath, verbose);}
     catch (e) {
-        console.error(`An error occurred while parsing command-line arguments: ${e}`);
-    if (e.endsWith("(e)")) console.error("Visit https://github.com/KtheVeg/GD-Level-Decoder for more information."); else console.error("This seems to be an internal error. Please submit an issue at https://github.com/KtheVeg/GD-Level-Decoder/issues. Note down the internal error and the command arguments you used (Internal Error Code: 2)");
+        console.error(`An error occurred while attempting to encode the files: ${e}`);
+        if (e.endsWith("(e)")) console.error("Visit https://github.com/KtheVeg/GD-Level-Decoder for more information."); else console.error("This seems to be an internal error. Please submit an issue at https://github.com/KtheVeg/GD-Level-Decoder/issues. Note down the internal error and the command arguments you used (Internal Error Code: 2)");
     }
 } else {
     console.log("Decoding...");
-    lvlDecode(operationParams.encodedFilePath, operationParams.decodedFilePath);
+    try 
+    {lvlDecode(operationParams.encodedFilePath, operationParams.decodedFilePath, verbose)}
+    catch (e)
+    {
+        console.error(`An error occurred while attempting to decode the files: ${e}`);
+        if (e.endsWith("(e)")) console.error("Visit https://github.com/KtheVeg/GD-Level-Decoder for more information."); else console.error("This seems to be an internal error. Please submit an issue at https://github.com/KtheVeg/GD-Level-Decoder/issues. Note down the internal error and the command arguments you used (Internal Error Code: 3)");
+    }
 }

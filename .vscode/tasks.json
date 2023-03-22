@@ -1,0 +1,40 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run",
+            "dependsOn": "Package",
+            "group":
+            {
+                "kind": "test",
+                "isDefault": true
+            },
+            "type": "shell",
+            "windows":
+            {
+                "command": ".\\index-win.exe"
+            },
+            "args": ["d", "l"]
+        },
+        {
+            "label": "Clean Build",
+            "type": "shell",
+            "command": "del",
+            "args": ["index-*"]
+        },
+        {
+            "label": "Package",
+            "type": "shell",
+            "command": "npx",
+            "args": ["pkg", "index.js"],
+            "dependsOn":
+            [
+                "Clean Build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        }
+    ]
+}
